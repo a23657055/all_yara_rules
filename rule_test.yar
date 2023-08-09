@@ -1,3 +1,5 @@
+import "pe"
+
 rule DebuggerException__SetConsoleCtrl : AntiDebug DebuggerException {
 	meta:
 		weight = 1
