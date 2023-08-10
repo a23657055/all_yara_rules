@@ -1,29 +1,11 @@
-import "pe"
-
-rule DebuggerException__SetConsoleCtrl : AntiDebug DebuggerException {
-	meta:
-		weight = 1
-		Author = "naxonez"
-		reference = "https://github.com/naxonez/yaraRules/blob/master/AntiDebugging.yara"
-	strings:
-		$ ="SetConsoleCtrlHandler"
-	condition:
-		any of them
-}
-
-rule Str_Win32_Http_API
+rule HasDebugData : PECheck
 {
-    meta:
-        author = "@adricnet"
-        description = "Match Windows Http API call"
-        method = "String match, trim the As"
-        reference = "https://github.com/dfirnotes/rules"
-
-    strings:
-        $wininet_call_httpr = "HttpSendRequest"
-        $wininet_call_httpq = "HttpQueryInfo"
-        $wininet_call_httpo = "HttpOpenRequest"
-
-     condition:
-        (any of ($wininet_call_http*))
+	meta: 
+		author = "_pusher_"
+		description = "DebugData Check"
+		date="2016-07"
+	condition:
+		uint16(0) == 0x5A4D and
+		uint32(uint32(0x3C)) == 0x00004550 and
+		((uint32(uint32(0x3C)+0xA8+((uint16(uint32(0x3C)+0x18) & 0x200) >> 5)) >0x0) and (uint32be(uint32(0x3C)+0xAC+((uint16(uint32(0x3C)+0x18) & 0x200) >> 5)) >0x0))
 }
